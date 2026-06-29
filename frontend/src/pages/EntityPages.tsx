@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect, type ChangeEvent, type Dispatch, type For
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { EmptyState } from "../components/EmptyState";
@@ -568,6 +569,7 @@ function EntityPage<T extends BaseEntity, TCreate, TUpdate>({
 }): JSX.Element {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { isStock } = useAuth();
 
   useProductosWS();
 
@@ -852,29 +854,33 @@ function EntityPage<T extends BaseEntity, TCreate, TUpdate>({
                 Ver detalle
               </button>
             ) : null}
-              <button
-                type="button"
-                onClick={() => openEdit(item)}
-                className="rounded bg-amber-500 px-2 py-1 text-xs font-medium text-white shadow-sm"
-              >
-                Editar
-              </button>
-              {isActive ? (
-                <button
-                  type="button"
-                  onClick={() => void onDelete(item.id)}
-                  className="rounded bg-orange-700 px-2 py-1 text-xs font-medium text-white shadow-sm"
-                >
-                  Baja
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => void onRestore(item.id)}
-                  className="rounded bg-emerald-600 px-2 py-1 text-xs font-medium text-white shadow-sm"
-                >
-                  Dar de alta
-                </button>
+              {!(isStock && (isProductPage || isIngredientePage)) && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => openEdit(item)}
+                    className="rounded bg-amber-500 px-2 py-1 text-xs font-medium text-white shadow-sm"
+                  >
+                    Editar
+                  </button>
+                  {isActive ? (
+                    <button
+                      type="button"
+                      onClick={() => void onDelete(item.id)}
+                      className="rounded bg-orange-700 px-2 py-1 text-xs font-medium text-white shadow-sm"
+                    >
+                      Baja
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => void onRestore(item.id)}
+                      className="rounded bg-emerald-600 px-2 py-1 text-xs font-medium text-white shadow-sm"
+                    >
+                      Dar de alta
+                    </button>
+                  )}
+                </>
               )}
           </div>
         </td>
@@ -926,13 +932,15 @@ function EntityPage<T extends BaseEntity, TCreate, TUpdate>({
     <section className="rounded-2xl border border-orange-100 dark:border-gray-500 bg-white/90 dark:bg-gray-800/90 p-4 shadow-sm backdrop-blur">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-orange-900 dark:text-orange-300">{config.title}</h2>
-        <button
-          onClick={openCreate}
-          className="rounded bg-orange-500 dark:bg-orange-600 px-3 py-2 text-sm font-medium text-white shadow-sm"
-          type="button"
-        >
-          Crear
-        </button>
+        {!(isStock && (isProductPage || isIngredientePage)) && (
+          <button
+            onClick={openCreate}
+            className="rounded bg-orange-500 dark:bg-orange-600 px-3 py-2 text-sm font-medium text-white shadow-sm"
+            type="button"
+          >
+            Crear
+          </button>
+        )}
       </div>
 
       <div className="mb-4 grid gap-3 md:grid-cols-4">

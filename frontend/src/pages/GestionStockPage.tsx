@@ -193,16 +193,20 @@ function ProductosStockTab(): JSX.Element {
                       ${Number(p.precio_base).toLocaleString("es-AR")}
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingId(p.id);
-                          setEditValue(p.usa_stock_manual ? (p.stock_manual ?? 0) : 0);
-                        }}
-                        className="rounded bg-blue-100 dark:bg-blue-900/50 px-3 py-1 text-xs font-medium text-blue-800 dark:text-blue-300 hover:bg-blue-200"
-                      >
-                        Editar stock
-                      </button>
+                      {p.usa_stock_manual ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingId(p.id);
+                            setEditValue(p.stock_manual ?? 0);
+                          }}
+                          className="rounded bg-blue-100 dark:bg-blue-900/50 px-3 py-1 text-xs font-medium text-blue-800 dark:text-blue-300 hover:bg-blue-200"
+                        >
+                          Editar stock
+                        </button>
+                      ) : (
+                        <span className="text-xs text-slate-400 dark:text-gray-500 italic">Stock derivado</span>
+                      )}
                     </td>
                   </tr>
                 ))
